@@ -1,10 +1,9 @@
 use std::iter::IntoIterator;
-use std::result;
 use crate::errors::parse::ParsingError;
 use crate::protocol::types::Type;
 
 
-pub type ParsingResult = result::Result<Type, ParsingError>;
+pub type ParsingResult = Result<Type, ParsingError>;
 
 
 pub fn deserialize<T>(buffer: T) -> ParsingResult
@@ -15,13 +14,13 @@ where
 
     match iter.next() {
         None => Err(ParsingError::Empty),
-        Some(start_byte) => handler(iter, start_byte),
+        Some(start_byte) => handler(&mut iter, start_byte),
     }
 }
 
-fn handler<T>(buffer: T, start_byte: u8) -> ParsingResult
+fn handler<T>(buffer: &mut T, start_byte: u8) -> ParsingResult
 where
-    T: IntoIterator<Item = u8>
+    T: Iterator<Item = u8>
 {
     match start_byte {
         43 => simple_string(buffer),
@@ -33,37 +32,72 @@ where
     }
 }
 
-fn simple_string<T>(buffer: T) -> ParsingResult
+fn simple_string<T>(buffer: &mut T) -> ParsingResult
 where
-    T: IntoIterator<Item = u8>
+    T: Iterator<Item = u8>
+{
+    
+    Ok(Type::Null)
+}
+
+fn error<T>(buffer: &mut T) -> ParsingResult
+where
+    T: Iterator<Item = u8>
 {
     Ok(Type::Null)
 }
 
-fn error<T>(buffer: T) -> ParsingResult
+fn integer<T>(buffer: &mut T) -> ParsingResult
 where
-    T: IntoIterator<Item = u8>
+    T: Iterator<Item = u8>
 {
     Ok(Type::Null)
 }
 
-fn integer<T>(buffer: T) -> ParsingResult
+fn bulk_string<T>(buffer: &mut T) -> ParsingResult
 where
-    T: IntoIterator<Item = u8>
+    T: Iterator<Item = u8>
 {
     Ok(Type::Null)
 }
 
-fn bulk_string<T>(buffer: T) -> ParsingResult
+fn array<T>(buffer: &mut T) -> ParsingResult
 where
-    T: IntoIterator<Item = u8>
+    T: Iterator<Item = u8>
 {
     Ok(Type::Null)
 }
 
-fn array<T>(buffer: T) -> ParsingResult
+fn extract_bytes<T>(buffer: &mut T) -> Result<String, ParsingError>
 where
-    T: IntoIterator<Item = u8>
+    T: Iterator<Item = u8>
 {
-    Ok(Type::Null)
+    let mut string = String::new();
+    let mut encounter_cr = false;
+    let mut encounter_lf = false;
+
+    while let Some(byte) = buffer.next() {
+        match byte {
+            13 => {
+                encounter_cr = true;
+                break;
+            },
+            _ => string.push(byte as char),
+        }
+    }
+
+    if let Some(byte) = buffer.next() {
+        if byte == 10 {
+            encounter_lf = true;
+        }
+    }
+
+    if !encounter_cr {
+        return Err(ParsingError::MissingCR);
+    }
+    if !encounter_lf {
+        return Err(ParsingError::MissingLF);
+    }
+
+    Ok(string)
 }
