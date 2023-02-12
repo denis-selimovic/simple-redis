@@ -1,7 +1,7 @@
 use crate::protocol::types::Type;
 
 
-fn serialize(t: &Type) -> Vec<u8> {
+pub fn serialize(t: &Type) -> Vec<u8> {
     match t {
         Type::Null => null(),
         Type::SimpleString(s) => simple_string(&s),
