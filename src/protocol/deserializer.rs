@@ -36,15 +36,16 @@ fn simple_string<T>(buffer: &mut T) -> ParsingResult
 where
     T: Iterator<Item = u8>
 {
-    
-    Ok(Type::Null)
+    let simple_string = extract_bytes(buffer)?;
+    Ok(Type::SimpleString(simple_string))
 }
 
 fn error<T>(buffer: &mut T) -> ParsingResult
 where
     T: Iterator<Item = u8>
 {
-    Ok(Type::Null)
+    let error = extract_bytes(buffer)?;
+    Ok(Type::Error(error))
 }
 
 fn integer<T>(buffer: &mut T) -> ParsingResult
