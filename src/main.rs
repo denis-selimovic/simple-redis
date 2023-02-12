@@ -1,5 +1,6 @@
 use std::net::TcpListener;
 
+pub mod errors;
 pub mod protocol;
 
 
