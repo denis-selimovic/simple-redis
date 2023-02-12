@@ -1,19 +1,25 @@
 use std::iter::IntoIterator;
-use super::types::Type;
+use std::result;
+use crate::errors::parse::ParsingError;
+use crate::protocol::types::Type;
 
-pub fn deserialize<T>(buffer: T) -> Type
+
+pub type ParsingResult = result::Result<Type, ParsingError>;
+
+
+pub fn deserialize<T>(buffer: T) -> ParsingResult
 where
     T: IntoIterator<Item = u8>
 {
     let mut iter = buffer.into_iter();
 
     match iter.next() {
-        None => Type::Null,
+        None => Err(ParsingError::Empty),
         Some(start_byte) => handler(iter, start_byte),
     }
 }
 
-fn handler<T>(buffer: T, start_byte: u8) -> Type
+fn handler<T>(buffer: T, start_byte: u8) -> ParsingResult
 where
     T: IntoIterator<Item = u8>
 {
@@ -23,41 +29,41 @@ where
         58 => integer(buffer),
         36 => bulk_string(buffer),
         42 => array(buffer),
-        _ => Type::Null
+        _ => Err(ParsingError::UnknownStartByte(start_byte)),
     }
 }
 
-fn simple_string<T>(buffer: T) -> Type
+fn simple_string<T>(buffer: T) -> ParsingResult
 where
     T: IntoIterator<Item = u8>
 {
-    Type::Null
+    Ok(Type::Null)
 }
 
-fn error<T>(buffer: T) -> Type
+fn error<T>(buffer: T) -> ParsingResult
 where
     T: IntoIterator<Item = u8>
 {
-    Type::Null
+    Ok(Type::Null)
 }
 
-fn integer<T>(buffer: T) -> Type
+fn integer<T>(buffer: T) -> ParsingResult
 where
     T: IntoIterator<Item = u8>
 {
-    Type::Null
+    Ok(Type::Null)
 }
 
-fn bulk_string<T>(buffer: T) -> Type
+fn bulk_string<T>(buffer: T) -> ParsingResult
 where
     T: IntoIterator<Item = u8>
 {
-    Type::Null
+    Ok(Type::Null)
 }
 
-fn array<T>(buffer: T) -> Type
+fn array<T>(buffer: T) -> ParsingResult
 where
     T: IntoIterator<Item = u8>
 {
-    Type::Null
+    Ok(Type::Null)
 }
