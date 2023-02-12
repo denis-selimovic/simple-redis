@@ -76,11 +76,7 @@ where
                 }
             } else {
                 let integer = integer as usize;
-                let string = extract_bytes(buffer)?;
-
-                if string.len() != integer {
-                    return  Err(ParsingError::StringLengthMismatch(integer, string.len()));
-                }
+                let string = extract_bulk_bytes(buffer, integer)?;
 
                 return Ok(Type::BulkString(string));
             }
@@ -139,6 +135,46 @@ where
     }
     if !encounter_lf {
         return Err(ParsingError::MissingLF);
+    }
+
+    Ok(string)
+}
+
+fn extract_bulk_bytes<T>(buffer: &mut T, size: usize) -> Result<String, ParsingError>
+where
+    T: Iterator<Item = u8>
+{
+    let mut string = String::new();
+    let mut encounter_cr = false;
+    let mut encounter_lf = false;
+
+    for _ in 0..size {
+        if let Some(byte) = buffer.next() {
+            string.push(byte as char);
+        }
+    }
+
+    if let Some(byte) = buffer.next() {
+        if byte == 13 {
+            encounter_cr = true;
+        }
+    }
+
+    if let Some(byte) = buffer.next() {
+        if byte == 10 {
+            encounter_lf = true;
+        }
+    }
+
+    if !encounter_cr {
+        return Err(ParsingError::MissingCR);
+    }
+    if !encounter_lf {
+        return Err(ParsingError::MissingLF);
+    }
+
+    if string.len() < size {
+        return Err(ParsingError::StringLengthMismatch(string.len(), size));
     }
 
     Ok(string)
