@@ -3,6 +3,9 @@ use std::net::TcpListener;
 pub mod errors;
 pub mod protocol;
 
+#[cfg(test)]
+mod tests;
+
 
 fn main() {
     let listener = TcpListener::bind("127.0.0.1:7878").unwrap();
