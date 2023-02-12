@@ -18,4 +18,6 @@ pub enum ParsingError {
     InvalidStringLength(i64),
     #[error("expected string length to be {0}, got {1} instead")]
     StringLengthMismatch(usize, usize),
+    #[error("invalid array length")]
+    InvalidArrayLength,
 }

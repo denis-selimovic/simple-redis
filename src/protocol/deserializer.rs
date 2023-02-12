@@ -1,4 +1,3 @@
-use std::iter::IntoIterator;
 use crate::errors::parse::ParsingError;
 use crate::protocol::types::Type;
 
@@ -6,15 +5,13 @@ use crate::protocol::types::Type;
 pub type ParsingResult = Result<Type, ParsingError>;
 
 
-pub fn deserialize<T>(buffer: T) -> ParsingResult
+pub fn deserialize<T>(buffer: &mut T) -> ParsingResult
 where
-    T: IntoIterator<Item = u8>
+    T: Iterator<Item = u8>
 {
-    let mut iter = buffer.into_iter();
-
-    match iter.next() {
+    match buffer.next() {
         None => Err(ParsingError::Empty),
-        Some(start_byte) => handler(&mut iter, start_byte),
+        Some(start_byte) => handler(buffer, start_byte),
     }
 }
 
@@ -95,7 +92,22 @@ fn array<T>(buffer: &mut T) -> ParsingResult
 where
     T: Iterator<Item = u8>
 {
-    Ok(Type::Null)
+    let len = extract_bytes(buffer)?;
+    let parsed_len = len.parse::<u64>();
+
+    match parsed_len {
+        Err(_) => Err(ParsingError::InvalidArrayLength),
+        Ok(len) => {
+            let mut array = vec![];
+            
+            for _ in 0..len {
+                let el = deserialize(buffer)?;
+                array.push(el);
+            }
+
+            Ok(Type::Array(array))
+        }
+    }
 }
 
 fn extract_bytes<T>(buffer: &mut T) -> Result<String, ParsingError>
