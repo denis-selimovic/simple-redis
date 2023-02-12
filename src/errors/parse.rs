@@ -12,4 +12,10 @@ pub enum ParsingError {
     MissingCR,
     #[error(r#"missing line feed ('\n') when parsing"#)]
     MissingLF,
+    #[error("{0} cannot be converted to signed 64-bit integer")]
+    IntegerOverflow(String),
+    #[error("invalid length {0} for bulk string")]
+    InvalidStringLength(i64),
+    #[error("expected string length to be {0}, got {1} instead")]
+    StringLengthMismatch(usize, usize),
 }

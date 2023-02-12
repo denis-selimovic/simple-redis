@@ -52,14 +52,43 @@ fn integer<T>(buffer: &mut T) -> ParsingResult
 where
     T: Iterator<Item = u8>
 {
-    Ok(Type::Null)
+    let integer_string = extract_bytes(buffer)?;
+    let parsing_result = integer_string.parse::<i64>();
+
+    match parsing_result {
+        Err(_) => Err(ParsingError::IntegerOverflow(integer_string)),
+        Ok(integer) => Ok(Type::Integer(integer)),
+    }
 }
 
 fn bulk_string<T>(buffer: &mut T) -> ParsingResult
 where
     T: Iterator<Item = u8>
 {
-    Ok(Type::Null)
+    let len = extract_bytes(buffer)?;
+    let parsed_len = len.parse::<i64>();
+
+    match parsed_len {
+        Err(_) => Err(ParsingError::IntegerOverflow(len)),
+        Ok(integer) => {
+            if integer < 0 {
+                if integer == -1 {
+                    return Ok(Type::Null);
+                } else {
+                    return Err(ParsingError::InvalidStringLength(integer));
+                }
+            } else {
+                let integer = integer as usize;
+                let string = extract_bytes(buffer)?;
+
+                if string.len() != integer {
+                    return  Err(ParsingError::StringLengthMismatch(integer, string.len()));
+                }
+
+                return Ok(Type::BulkString(string));
+            }
+        },
+    }
 }
 
 fn array<T>(buffer: &mut T) -> ParsingResult
