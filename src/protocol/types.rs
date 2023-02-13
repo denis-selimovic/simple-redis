@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub enum Type {
     Null,
     SimpleString(String),
