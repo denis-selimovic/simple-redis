@@ -1,11 +1,11 @@
 use crate::commands::implt::set::set;
-use crate::commands::types::ComandResult;
+use crate::commands::types::CommandResult;
 use crate::errors::command::CommandError;
 use crate::protocol::types::Type;
 use crate::storage::Storage;
 
 
-pub fn mset<'a, 'b>(args: &'a [Type], storage: &'b mut Storage) -> ComandResult {
+pub fn mset<'a, 'b>(args: &'a [Type], storage: &'b mut Storage) -> CommandResult {
     if args.len() % 2 != 0  || args.len() == 0 {
         return Err(CommandError::WrongVariableParamNumber("MSET".to_string(), 2, args.len()));
     }

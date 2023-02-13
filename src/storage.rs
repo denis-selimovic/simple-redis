@@ -19,4 +19,20 @@ impl Storage {
     pub fn write(&mut self, key: String, t: Type) {
         self.db.insert(key, t);
     }
+
+    pub fn remove(&mut self, key: &String) -> Type {
+        let removed = self.db.remove(key);
+
+        match removed {
+            None => Type::Integer(0),
+            Some(_) => Type::Integer(1),
+        }
+    }
+
+    pub fn flush(&mut self) -> Type {
+        let deleted = self.db.len();
+        self.db.clear();
+
+        Type::Integer(deleted as i64)
+    }
 }
