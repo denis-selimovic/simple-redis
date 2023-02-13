@@ -10,4 +10,6 @@ pub enum CommandError {
     WrongVariableParamNumber(String, usize, usize),
     #[error("invalid param type {1} for command {0}")]
     InvalidParamType(String, usize),
+    #[error("invalid operation {0}")]
+    InvalidOp(String),
 }
