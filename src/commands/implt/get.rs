@@ -15,7 +15,7 @@ pub fn get<'a, 'b>(args: &'a [Type], storage: &'b mut Storage) -> CommandResult 
             
             match value {
                 None => Ok(Type::Null),
-                Some(v) => Ok(v.clone()),
+                Some(v) => Ok(v),
             }
         },
         _ => Err(CommandError::InvalidParamType("GET".to_string(), 1)),

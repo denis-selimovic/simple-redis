@@ -1,27 +1,36 @@
 use std::collections::HashMap;
+use std::sync::RwLock;
+
 use crate::protocol::types::Type;
 
 
 pub struct Storage {
-    db: HashMap<String, Type>,
+    db: RwLock<HashMap<String, Type>>,
 }
 
 
 impl Storage {
     pub fn new() -> Self {
-        Storage { db: HashMap::new() }
+        Storage { db: RwLock::new(HashMap::new()) }
     }
 
-    pub fn read(&self, key: &String) -> Option<&Type> {
-        self.db.get(key)
+    pub fn read(&self, key: &String) -> Option<Type> {
+        let db = self.db.read().expect("Cannot obtain lock");
+        
+        match db.get(key) {
+            None => None,
+            Some(t) => Some(t.clone()),
+        }
     }
 
     pub fn write(&mut self, key: String, t: Type) {
-        self.db.insert(key, t);
+        let mut db = self.db.write().expect("Cannot obtain lock");
+        db.insert(key, t);
     }
 
     pub fn remove(&mut self, key: &String) -> Type {
-        let removed = self.db.remove(key);
+        let mut db = self.db.write().expect("Cannot obtain lock");
+        let removed = db.remove(key);
 
         match removed {
             None => Type::Integer(0),
@@ -30,8 +39,9 @@ impl Storage {
     }
 
     pub fn flush(&mut self) -> Type {
-        let deleted = self.db.len();
-        self.db.clear();
+        let mut db = self.db.write().expect("Cannot obtain lock");
+        let deleted = db.len();
+        db.clear();
 
         Type::Integer(deleted as i64)
     }
