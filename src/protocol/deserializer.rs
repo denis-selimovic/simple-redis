@@ -9,23 +9,35 @@ pub fn deserialize<T>(buffer: &mut T) -> ParsingResult
 where
     T: Iterator<Item = u8>
 {
+    let next = buffer.next();
+    let parsed = handler(buffer, next)?;
+
     match buffer.next() {
-        None => Err(ParsingError::Empty),
-        Some(start_byte) => handler(buffer, start_byte),
+        None => return Err(ParsingError::MissingEndByte),
+        Some(byte) => {
+            if byte != 33 {
+                return Err(ParsingError::MissingEndByte);
+            }
+        }
     }
+
+    Ok(parsed)
 }
 
-fn handler<T>(buffer: &mut T, start_byte: u8) -> ParsingResult
+fn handler<T>(buffer: &mut T, start_byte: Option<u8>) -> ParsingResult
 where
     T: Iterator<Item = u8>
 {
     match start_byte {
-        43 => simple_string(buffer),
-        45 => error(buffer),
-        58 => integer(buffer),
-        36 => bulk_string(buffer),
-        42 => array(buffer),
-        _ => Err(ParsingError::UnknownStartByte(start_byte)),
+        Some(start_byte) => match start_byte {
+            43 => simple_string(buffer),
+            45 => error(buffer),
+            58 => integer(buffer),
+            36 => bulk_string(buffer),
+            42 => array(buffer),
+            _ => Err(ParsingError::UnknownStartByte(start_byte)),
+        },
+        None => Err(ParsingError::Empty),
     }
 }
 
@@ -70,6 +82,7 @@ where
         Ok(integer) => {
             if integer < 0 {
                 if integer == -1 {
+                    let _ = extract_bulk_bytes(buffer, 0);
                     return Ok(Type::Null);
                 } else {
                     return Err(ParsingError::InvalidStringLength(integer));
@@ -97,7 +110,8 @@ where
             let mut array = vec![];
             
             for _ in 0..len {
-                let el = deserialize(buffer)?;
+                let next = buffer.next();
+                let el = handler(buffer, next)?;
                 array.push(el);
             }
 

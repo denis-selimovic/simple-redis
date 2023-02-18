@@ -20,4 +20,6 @@ pub enum ParsingError {
     StringLengthMismatch(usize, usize),
     #[error("invalid array length")]
     InvalidArrayLength,
+    #[error("missing end byte")]
+    MissingEndByte,
 }

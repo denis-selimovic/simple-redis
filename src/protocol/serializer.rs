@@ -20,7 +20,7 @@ pub fn type_handler(t: &Type) -> Vec<u8> {
 }
 
 fn null() -> Vec<u8> {
-    vec![36, 45, 49, 13, 10]
+    vec![36, 45, 49, 13, 10, 13, 10]
 }
 
 fn simple_string(s: &str) -> Vec<u8> {
