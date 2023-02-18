@@ -2,6 +2,13 @@ use crate::protocol::types::Type;
 
 
 pub fn serialize(t: &Type) -> Vec<u8> {
+    let mut bytes = type_handler(t);
+    bytes.push(33);
+
+    bytes
+}
+
+pub fn type_handler(t: &Type) -> Vec<u8> {
     match t {
         Type::Null => null(),
         Type::SimpleString(s) => simple_string(&s),
@@ -66,7 +73,7 @@ fn array(arr: &Vec<Type>) -> Vec<u8> {
     v.push(10);
 
     for el in arr {
-        let mut code = serialize(el);
+        let mut code = type_handler(el);
         v.append(&mut code);
     }
 
