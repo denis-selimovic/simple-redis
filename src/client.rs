@@ -26,7 +26,7 @@ pub async fn receive_replies(stream: net::TcpStream) -> Result<(), ClientError> 
     let mut buff = io::BufReader::new(stream);
     loop {
         let reply = receive_reply(&mut buff).await?;
-        println!("{}", reply.to_string());
+        println!(">>> {}", reply.to_string());
     }
 }
 
