@@ -15,12 +15,7 @@ pub async fn send_commands(mut stream: net::TcpStream ) -> Result<(), ClientErro
     while let Some(command) = command_line.next().await {
         match command {
             Err(_) => return Err(ClientError::InputError),
-            Ok(command) => {
-                match command.strip_suffix("\n") {
-                    None => continue,
-                    Some(buff) => send_command(&mut stream, buff).await?,
-                };
-            }
+            Ok(command) => send_command(&mut stream, &command).await?
         }
     }
 
