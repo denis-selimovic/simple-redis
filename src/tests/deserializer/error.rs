@@ -4,7 +4,7 @@ use crate::protocol::types::Type;
 
 #[test]
 fn deserialize_error_empty() {
-    let string = "-\r\n";
+    let string = "-\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -19,7 +19,7 @@ fn deserialize_error_empty() {
 
 #[test]
 fn deserialize_error() {
-    let string = "-hello\r\n";
+    let string = "-hello\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -34,7 +34,7 @@ fn deserialize_error() {
 
 #[test]
 fn deserialize_error_whitespace() {
-    let string = "-hello world!\r\n";
+    let string = "-hello world!\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -49,7 +49,7 @@ fn deserialize_error_whitespace() {
 
 #[test]
 fn deserializeerror_whitespace_capital() {
-    let string = "-Hello World ! \r\n";
+    let string = "-Hello World ! \r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -64,7 +64,7 @@ fn deserializeerror_whitespace_capital() {
 
 #[test]
 fn deserialize_error_whitespace_only() {
-    let string = "-   \r\n";
+    let string = "-   \r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -80,7 +80,7 @@ fn deserialize_error_whitespace_only() {
 
 #[test]
 fn deserialize_error_numbers_only() {
-    let string = "-2345\r\n";
+    let string = "-2345\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -95,7 +95,7 @@ fn deserialize_error_numbers_only() {
 
 #[test]
 fn deserialize_error_numbersl() {
-    let string = "-Rust 2023\r\n";
+    let string = "-Rust 2023\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -110,7 +110,7 @@ fn deserialize_error_numbersl() {
 
 #[test]
 fn deserialize_error_missing_cr() {
-    let string = "-Hello World ! \n";
+    let string = "-Hello World ! \n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -123,7 +123,7 @@ fn deserialize_error_missing_cr() {
 
 #[test]
 fn deserialize_error_missing_ln() {
-    let string = "-Hello World ! \r";
+    let string = "-Hello World ! \r!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 

@@ -4,7 +4,7 @@ use crate::protocol::types::Type;
 
 #[test]
 fn deserialize_empty_array() {
-    let string = "*0\r\n";
+    let string = "*0\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -19,7 +19,7 @@ fn deserialize_empty_array() {
 
 #[test]
 fn deserialize_integer_array() {
-    let string = "*3\r\n:12\r\n:-5\r\n:2023\r\n";
+    let string = "*3\r\n:12\r\n:-5\r\n:2023\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -49,7 +49,7 @@ fn deserialize_integer_array() {
 
 #[test]
 fn deserialize_simple_string_array() {
-    let string = "*5\r\n+hello\r\n+world\r\n+\r\n+HeLlO\r\n+1\r\n";
+    let string = "*5\r\n+hello\r\n+world\r\n+\r\n+HeLlO\r\n+1\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -87,7 +87,7 @@ fn deserialize_simple_string_array() {
 
 #[test]
 fn deserialize_error_array() {
-    let string = "*2\r\n-err1\r\n-err2\r\n";
+    let string = "*2\r\n-err1\r\n-err2\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -113,7 +113,7 @@ fn deserialize_error_array() {
 
 #[test]
 fn deserialize_bulk_string_array() {
-    let string = "*4\r\n$5\r\nhello\r\n$5\r\nworld\r\n$0\r\n\r\n$5\r\nHeLlO\r\n";
+    let string = "*4\r\n$5\r\nhello\r\n$5\r\nworld\r\n$0\r\n\r\n$5\r\nHeLlO\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -147,7 +147,7 @@ fn deserialize_bulk_string_array() {
 
 #[test]
 fn deserialize_array_of_arrays() {
-    let string = "*2\r\n*2\r\n-err\r\n$-1\r\n*3\r\n+hello\r\n:-54\r\n$2\r\n\r\n\r\n";
+    let string = "*2\r\n*2\r\n-err\r\n$-1\r\n\r\n*3\r\n+hello\r\n:-54\r\n$2\r\n\r\n\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -199,7 +199,7 @@ fn deserialize_array_of_arrays() {
 
 #[test]
 fn deserialize_array_of_arrays_different_types() {
-    let string = "*2\r\n*2\r\n+err\r\n$-1\r\n*3\r\n-hello\r\n:-54\r\n$2\r\nhe\r\n";
+    let string = "*2\r\n*2\r\n+err\r\n$-1\r\n\r\n*3\r\n-hello\r\n:-54\r\n$2\r\nhe\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 

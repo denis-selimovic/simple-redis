@@ -4,7 +4,7 @@ use crate::protocol::types::Type;
 
 #[test]
 fn deserialize_integer_zero() {
-    let string = ":0\r\n";
+    let string = ":0\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -19,7 +19,7 @@ fn deserialize_integer_zero() {
 
 #[test]
 fn deserialize_integer_positive() {
-    let string = ":2023\r\n";
+    let string = ":2023\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -34,7 +34,7 @@ fn deserialize_integer_positive() {
 
 #[test]
 fn deserialize_integer_negative() {
-    let string = ":-2023\r\n";
+    let string = ":-2023\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -49,7 +49,7 @@ fn deserialize_integer_negative() {
 
 #[test]
 fn deserialize_integer_multiple_digits() {
-    let string = ":123456789012345\r\n";
+    let string = ":123456789012345\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -64,7 +64,7 @@ fn deserialize_integer_multiple_digits() {
 
 #[test]
 fn deserialize_integer_multiple_digits_negative() {
-    let string = ":-123456789012345\r\n";
+    let string = ":-123456789012345\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -79,7 +79,7 @@ fn deserialize_integer_multiple_digits_negative() {
 
 #[test]
 fn deserialize_integer_upper_bound() {
-    let string = ":9223372036854775807\r\n";
+    let string = ":9223372036854775807\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -94,7 +94,7 @@ fn deserialize_integer_upper_bound() {
 
 #[test]
 fn deserialize_integer_lower_bound() {
-    let string = ":-9223372036854775808\r\n";
+    let string = ":-9223372036854775808\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -109,7 +109,7 @@ fn deserialize_integer_lower_bound() {
 
 #[test]
 fn deserialize_integer_overflow() {
-    let string = ":18446744073709551616\r\n";
+    let string = ":18446744073709551616\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -122,7 +122,7 @@ fn deserialize_integer_overflow() {
 
 #[test]
 fn deserialize_integer_overflow_negative() {
-    let string = ":-18446744073709551617\r\n";
+    let string = ":-18446744073709551617\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 

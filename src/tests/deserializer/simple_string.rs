@@ -4,7 +4,7 @@ use crate::protocol::types::Type;
 
 #[test]
 fn deserialize_simple_string_empty() {
-    let string = "+\r\n";
+    let string = "+\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -19,7 +19,7 @@ fn deserialize_simple_string_empty() {
 
 #[test]
 fn deserialize_simple_string() {
-    let string = "+hello\r\n";
+    let string = "+hello\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -34,7 +34,7 @@ fn deserialize_simple_string() {
 
 #[test]
 fn deserialize_simple_string_whitespace() {
-    let string = "+hello world!\r\n";
+    let string = "+hello world!\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -49,7 +49,7 @@ fn deserialize_simple_string_whitespace() {
 
 #[test]
 fn deserialize_simple_string_whitespace_capital() {
-    let string = "+Hello World ! \r\n";
+    let string = "+Hello World ! \r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -64,7 +64,7 @@ fn deserialize_simple_string_whitespace_capital() {
 
 #[test]
 fn deserialize_simple_string_whitespace_only() {
-    let string = "+   \r\n";
+    let string = "+   \r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -80,7 +80,7 @@ fn deserialize_simple_string_whitespace_only() {
 
 #[test]
 fn deserialize_simple_string_numbers_only() {
-    let string = "+2345\r\n";
+    let string = "+2345\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -94,8 +94,8 @@ fn deserialize_simple_string_numbers_only() {
 }
 
 #[test]
-fn deserialize_simple_string_numbersl() {
-    let string = "+Rust 2023\r\n";
+fn deserialize_simple_string_numbers() {
+    let string = "+Rust 2023\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 

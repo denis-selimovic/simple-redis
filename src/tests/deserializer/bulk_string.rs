@@ -4,7 +4,7 @@ use crate::protocol::types::Type;
 
 #[test]
 fn deserialize_bulk_string_empty() {
-    let string = "$0\r\n\r\n";
+    let string = "$0\r\n\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -19,7 +19,7 @@ fn deserialize_bulk_string_empty() {
 
 #[test]
 fn deserialize_bulk_string_binary_safe() {
-    let string = "$4\r\n2\r1\n\r\n";
+    let string = "$4\r\n2\r1\n\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -34,7 +34,7 @@ fn deserialize_bulk_string_binary_safe() {
 
 #[test]
 fn deserialize_bulk_string_null() {
-    let string = "$-1\r\n\r\n";
+    let string = "$-1\r\n\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -49,7 +49,7 @@ fn deserialize_bulk_string_null() {
 
 #[test]
 fn deserialize_bulk_string_whitespace() {
-    let string = "$12\r\nhello world!\r\n";
+    let string = "$12\r\nhello world!\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -64,7 +64,7 @@ fn deserialize_bulk_string_whitespace() {
 
 #[test]
 fn deserialize_bulk_string_whitespace_capital() {
-    let string = "$14\r\nHello World ! \r\n";
+    let string = "$14\r\nHello World ! \r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -79,7 +79,7 @@ fn deserialize_bulk_string_whitespace_capital() {
 
 #[test]
 fn deserialize_bulk_string_whitespace_only() {
-    let string = "$3\r\n   \r\n";
+    let string = "$3\r\n   \r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -95,7 +95,7 @@ fn deserialize_bulk_string_whitespace_only() {
 
 #[test]
 fn deserialize_bulk_string_numbers_only() {
-    let string = "$4\r\n2345\r\n";
+    let string = "$4\r\n2345\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -110,7 +110,7 @@ fn deserialize_bulk_string_numbers_only() {
 
 #[test]
 fn deserialize_bulk_string_numbersl() {
-    let string = "$9\r\nRust 2023\r\n";
+    let string = "$9\r\nRust 2023\r\n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -125,7 +125,7 @@ fn deserialize_bulk_string_numbersl() {
 
 #[test]
 fn deserialize_bulk_string_missing_cr() {
-    let string = "$14\r\nHello World ! \n";
+    let string = "$14\r\nHello World ! \n!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
@@ -138,7 +138,7 @@ fn deserialize_bulk_string_missing_cr() {
 
 #[test]
 fn deserialize_bulk_string_missing_ln() {
-    let string = "$14\r\nHello World ! \r";
+    let string = "$14\r\nHello World ! \r!";
     let buffer = string.as_bytes().to_vec();
     let mut iter = buffer.into_iter();
 
