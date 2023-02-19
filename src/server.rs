@@ -1,5 +1,6 @@
 use async_std::prelude::*;
-use async_std::{io, net};
+use async_std::{io, net, task};
+use std::sync::{Arc, Mutex};
 
 use crate::commands::registry::execute;
 use crate::errors::server::ServerError;
@@ -9,13 +10,31 @@ use crate::protocol::types::Type;
 use crate::storage::Storage;
 
 
-pub async fn execute_commands(stream: net::TcpStream) -> Result<(), ServerError>{
+pub async fn serve(listener: net::TcpListener) {
+    let mut new_connections = listener.incoming();
+    let storage = Arc::new(Mutex::new(Storage::new()));
+
+    while let Some(socket_res) = new_connections.next().await {
+        match socket_res {
+            Err(err) => println!("{}", err.to_string()),
+            Ok(socket) => {
+                let storage = storage.clone();
+                task::spawn(async move {
+                    println!("Starting command execution for {}", socket.local_addr().unwrap().to_string());
+                    let _ = execute_commands(socket, storage).await;
+                });
+            },
+        }
+    }
+}
+
+async fn execute_commands(stream: net::TcpStream, storage: Arc<Mutex<Storage>>) -> Result<(), ServerError>{
     let mut outbound = stream.clone();
-    let mut storage = Storage::new();
 
     let mut buff = io::BufReader::new(stream);
     loop {
-        let reply = execute_command(&mut buff, &mut storage).await?;
+        let storage = storage.clone();
+        let reply = execute_command(&mut buff, storage).await?;
         let bytes = serialize(&reply);
 
         match outbound.write(&bytes).await {
@@ -26,7 +45,7 @@ pub async fn execute_commands(stream: net::TcpStream) -> Result<(), ServerError>
 }
 
 
-async fn execute_command<S>(stream: &mut S, storage: &mut Storage) -> Result<Type, ServerError>
+async fn execute_command<S>(stream: &mut S, storage: Arc<Mutex<Storage>>) -> Result<Type, ServerError>
 where
     S: async_std::io::BufRead + Unpin
 {
